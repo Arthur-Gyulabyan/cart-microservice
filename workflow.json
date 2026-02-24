@@ -1,0 +1,1510 @@
+{
+  "id": "cf72e5a3-1dbc-4573-b23c-eca58f26f025",
+  "name": "Cart Microservice",
+  "projectId": "3262c068-4631-401d-b470-79ca26d9a87c",
+  "projectName": "E-commerce",
+  "lanes": [
+    {
+      "id": "261d8be5-0cee-4607-89b0-1d30bb2ac40c",
+      "name": "Customer"
+    },
+    {
+      "id": "9130f808-0425-4131-ab15-6296e98db8ff",
+      "name": "Cart Service"
+    },
+    {
+      "id": "36c2206f-2d8b-4acb-8ed2-85e1ac5c6f59",
+      "name": "Product Service"
+    },
+    {
+      "id": "f55281e0-494b-448b-b022-4cfaed267eb4",
+      "name": "Payment Service"
+    }
+  ],
+  "domainEvents": [
+    {
+      "id": "7d612af0-d2a6-49f4-b22d-c022ae3bc9ff",
+      "description": "Cart Created",
+      "laneId": "261d8be5-0cee-4607-89b0-1d30bb2ac40c",
+      "type": "bpmn:Task",
+      "parents": [
+        "start"
+      ],
+      "color": {
+        "red": 167,
+        "green": 212,
+        "blue": 238,
+        "rgb": "rgb(167,212,238)"
+      },
+      "version": 2,
+      "cards": [
+        {
+          "id": "3941cbc7-7345-4ef4-97d0-4467eba4697b",
+          "cardTypeId": "d1924d10-196b-4ce6-84ee-58128a611375",
+          "description": "Create Cart",
+          "created": "2026-02-24T08:01:04.449Z",
+          "sortkey": "n",
+          "done": false,
+          "version": 2,
+          "schemaId": "e8e557ac-f847-4cb7-900c-e0e4224e3e6b"
+        },
+        {
+          "id": "a3dba3a4-27ef-499a-8f17-8a445712d160",
+          "cardTypeId": "a760e240-2eee-4d1b-89eb-15157971d0e2",
+          "description": "Cart",
+          "created": "2026-02-24T08:01:06.433Z",
+          "sortkey": "u",
+          "done": false,
+          "version": 1,
+          "schemaId": "7dc60685-0bf3-4c8e-a42e-df3105424fd5"
+        },
+        {
+          "id": "0e9360dc-a544-4976-ac99-bd435808cc62",
+          "cardTypeId": "9bcd1764-3e4c-4b54-8862-e025cc3c03ee",
+          "description": "<b>Given</b> a customer is browsing the store and has no active cart<br/><b>When</b> CreateCart is called with customerId and currency<br/><b>Then</b> a new Cart is created with status \"active\", zero totals, and a unique cartId is generated",
+          "created": "2026-02-24T08:01:09.614Z",
+          "sortkey": "x",
+          "done": false,
+          "version": 1
+        }
+      ]
+    },
+    {
+      "id": "05843ac8-117c-4246-b538-b8169fbc228a",
+      "description": "Item Added to Cart",
+      "laneId": "261d8be5-0cee-4607-89b0-1d30bb2ac40c",
+      "type": "bpmn:Task",
+      "parents": [
+        "7d612af0-d2a6-49f4-b22d-c022ae3bc9ff"
+      ],
+      "color": {
+        "red": 189,
+        "green": 238,
+        "blue": 167,
+        "rgb": "rgb(189,238,167)"
+      },
+      "version": 2,
+      "cards": [
+        {
+          "id": "732af598-2403-4a73-a426-aa0544d96fcb",
+          "cardTypeId": "d1924d10-196b-4ce6-84ee-58128a611375",
+          "description": "Add Item To Cart",
+          "created": "2026-02-24T08:01:12.481Z",
+          "sortkey": "z",
+          "done": false,
+          "version": 2,
+          "schemaId": "78c9ae97-f5af-4c1a-bda9-bc11a874cfab"
+        },
+        {
+          "id": "226929e1-84c6-441c-82d6-73077d5f4522",
+          "cardTypeId": "a760e240-2eee-4d1b-89eb-15157971d0e2",
+          "description": "Cart",
+          "created": "2026-02-24T08:01:16.142Z",
+          "sortkey": "zn",
+          "done": false,
+          "version": 2,
+          "schemaId": "7dc60685-0bf3-4c8e-a42e-df3105424fd5"
+        },
+        {
+          "id": "93cca8fd-3d53-4c70-b17c-4c6e35b3c67f",
+          "cardTypeId": "4f991d15-9b3b-4b06-98ea-eaceaeccb95a",
+          "description": "Get Cart By Id",
+          "created": "2026-02-24T08:01:17.613Z",
+          "sortkey": "zu",
+          "done": false,
+          "version": 2,
+          "schemaId": "6d0487a6-d790-4e80-8c84-e094fd5a13c6",
+          "cardinality": "one-to-one"
+        },
+        {
+          "id": "87204dab-c8e0-44ff-8157-8e3095c65d6c",
+          "cardTypeId": "9bcd1764-3e4c-4b54-8862-e025cc3c03ee",
+          "description": "<b>Given</b> an active Cart exists and the product is in stock<br/><b>When</b> AddItemToCart is called with productId, productName, unitPrice, and quantity<br/><b>Then</b> a new CartItem is created, the Cart subtotal and totalAmount are recalculated, and itemCount is incremented",
+          "created": "2026-02-24T08:01:19.154Z",
+          "sortkey": "zx",
+          "done": false,
+          "version": 1
+        }
+      ]
+    },
+    {
+      "id": "3a047a2b-5301-46b7-9d1f-f52b7b249463",
+      "description": "Item Removed from Cart",
+      "laneId": "261d8be5-0cee-4607-89b0-1d30bb2ac40c",
+      "type": "bpmn:Task",
+      "parents": [
+        "05843ac8-117c-4246-b538-b8169fbc228a"
+      ],
+      "color": {
+        "red": 236,
+        "green": 192,
+        "blue": 244,
+        "rgb": "rgb(236,192,244)"
+      },
+      "version": 3,
+      "cards": [
+        {
+          "id": "805dcfc8-96ac-435f-939d-8ec3d71e358a",
+          "cardTypeId": "d1924d10-196b-4ce6-84ee-58128a611375",
+          "description": "Remove Item From Cart",
+          "created": "2026-02-24T08:01:22.318Z",
+          "sortkey": "zz",
+          "done": false,
+          "version": 2,
+          "schemaId": "2c1065c8-5228-4f50-aac0-592d397a123d"
+        },
+        {
+          "id": "96408dc8-2e65-4bbf-a429-4d127953d3e5",
+          "cardTypeId": "a760e240-2eee-4d1b-89eb-15157971d0e2",
+          "description": "Cart",
+          "created": "2026-02-24T08:01:24.212Z",
+          "sortkey": "zzn",
+          "done": false,
+          "version": 2,
+          "schemaId": "7dc60685-0bf3-4c8e-a42e-df3105424fd5"
+        },
+        {
+          "id": "7b42d2c0-957d-48bf-a2c1-54a950837ed2",
+          "cardTypeId": "4f991d15-9b3b-4b06-98ea-eaceaeccb95a",
+          "description": "Get Cart By Id",
+          "created": "2026-02-24T08:01:26.080Z",
+          "sortkey": "zzu",
+          "done": false,
+          "version": 2,
+          "schemaId": "6d0487a6-d790-4e80-8c84-e094fd5a13c6",
+          "cardinality": "one-to-one"
+        },
+        {
+          "id": "ab70e1e2-4d69-4631-8c77-dd6daf1f6834",
+          "cardTypeId": "9bcd1764-3e4c-4b54-8862-e025cc3c03ee",
+          "description": "<b>Given</b> an active Cart with at least one CartItem<br/><b>When</b> RemoveItemFromCart is called with cartId and cartItemId<br/><b>Then</b> the CartItem is deleted, the Cart subtotal and totalAmount are recalculated, and itemCount is decremented",
+          "created": "2026-02-24T08:01:28.406Z",
+          "sortkey": "zzx",
+          "done": false,
+          "version": 1
+        }
+      ]
+    },
+    {
+      "id": "3a601700-80f9-40c4-8a36-bb6705420e89",
+      "description": "Item Quantity Updated",
+      "laneId": "261d8be5-0cee-4607-89b0-1d30bb2ac40c",
+      "groupId": "5297aa4e-68d9-4617-9581-1055fc984ff1",
+      "type": "bpmn:Task",
+      "parents": [
+        "3a047a2b-5301-46b7-9d1f-f52b7b249463"
+      ],
+      "color": {
+        "red": 255,
+        "green": 245,
+        "blue": 157,
+        "rgb": "rgb(255,245,157)"
+      },
+      "version": 5,
+      "cards": [
+        {
+          "id": "028a51a2-90fd-45dc-839e-86cbc004687f",
+          "cardTypeId": "d1924d10-196b-4ce6-84ee-58128a611375",
+          "description": "Update Item Quantity",
+          "created": "2026-02-24T08:01:39.959Z",
+          "sortkey": "zzz",
+          "done": false,
+          "version": 2,
+          "schemaId": "9eae5f3d-33e4-4b80-a725-dc7573a0f5a1"
+        },
+        {
+          "id": "0f36563c-48cb-4b80-9fa6-c69d8580b00e",
+          "cardTypeId": "a760e240-2eee-4d1b-89eb-15157971d0e2",
+          "description": "Cart",
+          "created": "2026-02-24T08:01:42.220Z",
+          "sortkey": "zzzn",
+          "done": false,
+          "version": 2,
+          "schemaId": "7dc60685-0bf3-4c8e-a42e-df3105424fd5"
+        },
+        {
+          "id": "1daab20e-4a2f-42df-b183-b10249e2fda0",
+          "cardTypeId": "4f991d15-9b3b-4b06-98ea-eaceaeccb95a",
+          "description": "Get Cart By Id",
+          "created": "2026-02-24T08:01:44.064Z",
+          "sortkey": "zzzu",
+          "done": false,
+          "version": 2,
+          "schemaId": "6d0487a6-d790-4e80-8c84-e094fd5a13c6",
+          "cardinality": "one-to-one"
+        },
+        {
+          "id": "ea8ffff8-14cd-4d10-a5bb-e314296e87f1",
+          "cardTypeId": "9bcd1764-3e4c-4b54-8862-e025cc3c03ee",
+          "description": "<b>Given</b> an active Cart with a CartItem for the specified product<br/><b>When</b> UpdateItemQuantity is called with cartItemId and newQuantity<br/><b>Then</b> the CartItem quantity and subtotal are updated, and the Cart subtotal and totalAmount are recalculated",
+          "created": "2026-02-24T08:01:46.488Z",
+          "sortkey": "zzzx",
+          "done": false,
+          "version": 1
+        }
+      ]
+    },
+    {
+      "id": "1dffbd6f-e308-4c27-a1b5-c6932c5d50aa",
+      "description": "Coupon Applied",
+      "laneId": "261d8be5-0cee-4607-89b0-1d30bb2ac40c",
+      "type": "bpmn:Task",
+      "parents": [
+        "3a601700-80f9-40c4-8a36-bb6705420e89"
+      ],
+      "color": {
+        "red": 193,
+        "green": 192,
+        "blue": 244,
+        "rgb": "rgb(193,192,244)"
+      },
+      "version": 5,
+      "cards": [
+        {
+          "id": "d44ecc2c-5780-4e8a-b459-fc9813ec9e8b",
+          "cardTypeId": "d1924d10-196b-4ce6-84ee-58128a611375",
+          "description": "Apply Coupon",
+          "created": "2026-02-24T08:01:50.019Z",
+          "sortkey": "zzzz",
+          "done": false,
+          "version": 2,
+          "schemaId": "22dc29b0-0249-4677-a507-b3bf9d50d98c"
+        },
+        {
+          "id": "d675d289-0dc4-4b50-b029-b15ab0c3c748",
+          "cardTypeId": "a760e240-2eee-4d1b-89eb-15157971d0e2",
+          "description": "Cart",
+          "created": "2026-02-24T08:01:52.258Z",
+          "sortkey": "zzzzn",
+          "done": false,
+          "version": 1,
+          "schemaId": "7dc60685-0bf3-4c8e-a42e-df3105424fd5"
+        },
+        {
+          "id": "51ad234f-ad25-4ec2-a9f6-e279f490f191",
+          "cardTypeId": "4f991d15-9b3b-4b06-98ea-eaceaeccb95a",
+          "description": "Get Cart Summary",
+          "created": "2026-02-24T08:01:55.260Z",
+          "sortkey": "zzzzu",
+          "done": false,
+          "version": 2,
+          "schemaId": "9b3c3d82-bcd3-44b8-a23c-0927f8ffc865",
+          "cardinality": "one-to-one"
+        },
+        {
+          "id": "1bf36a8e-3d08-4685-9117-7d0b2f911509",
+          "cardTypeId": "9bcd1764-3e4c-4b54-8862-e025cc3c03ee",
+          "description": "<b>Given</b> an active Cart with items and a valid coupon code exists<br/><b>When</b> ApplyCoupon is called with the couponCode<br/><b>Then</b> the Coupon is validated (not expired, usage limit not reached, minimum order met), the discount is calculated and applied, and the Cart totalAmount is updated",
+          "created": "2026-02-24T08:01:59.148Z",
+          "sortkey": "zzzzx",
+          "done": false,
+          "version": 1
+        }
+      ]
+    },
+    {
+      "id": "90cb7591-a175-43f4-bcf6-8694e9d1cacd",
+      "description": "Cart Validated",
+      "laneId": "36c2206f-2d8b-4acb-8ed2-85e1ac5c6f59",
+      "groupId": "21ccc881-ec72-4d55-9b6c-e7e32aaabf74",
+      "type": "bpmn:Task",
+      "parents": [
+        "1dffbd6f-e308-4c27-a1b5-c6932c5d50aa"
+      ],
+      "color": {
+        "red": 183,
+        "green": 238,
+        "blue": 228,
+        "rgb": "rgb(183,238,228)"
+      },
+      "version": 2,
+      "cards": [
+        {
+          "id": "976e159c-0c90-4940-84a7-5b9288cd1238",
+          "cardTypeId": "d1924d10-196b-4ce6-84ee-58128a611375",
+          "description": "Validate Cart",
+          "created": "2026-02-24T08:02:02.362Z",
+          "sortkey": "zzzzz",
+          "done": false,
+          "version": 2,
+          "schemaId": "159510d4-26b2-45a0-a50e-1f9485b56099"
+        },
+        {
+          "id": "152c01d9-9757-44eb-87a1-3a4af23f2c71",
+          "cardTypeId": "a760e240-2eee-4d1b-89eb-15157971d0e2",
+          "description": "Cart",
+          "created": "2026-02-24T08:02:04.445Z",
+          "sortkey": "zzzzzn",
+          "done": false,
+          "version": 1,
+          "schemaId": "7dc60685-0bf3-4c8e-a42e-df3105424fd5"
+        },
+        {
+          "id": "0161e401-026b-4f4d-8a46-e7c99f8db16c",
+          "cardTypeId": "4f991d15-9b3b-4b06-98ea-eaceaeccb95a",
+          "description": "Get Cart Summary",
+          "created": "2026-02-24T08:02:06.674Z",
+          "sortkey": "zzzzzu",
+          "done": false,
+          "version": 4,
+          "schemaId": "9b3c3d82-bcd3-44b8-a23c-0927f8ffc865",
+          "cardinality": "one-to-one"
+        },
+        {
+          "id": "85a5fd5b-fc14-4465-a747-ee5c67865ac3",
+          "cardTypeId": "9bcd1764-3e4c-4b54-8862-e025cc3c03ee",
+          "description": "<b>Given</b> an active Cart with items ready for checkout<br/><b>When</b> ValidateCart is called by the Product Service<br/><b>Then</b> all items are checked for stock availability and price accuracy, and the cart is marked as validated or validation errors are returned",
+          "created": "2026-02-24T08:02:09.878Z",
+          "sortkey": "zzzzzx",
+          "done": false,
+          "version": 1
+        }
+      ]
+    },
+    {
+      "id": "944bd5e1-9892-4262-b763-b723f888d072",
+      "description": "Validation Decision",
+      "laneId": "9130f808-0425-4131-ab15-6296e98db8ff",
+      "type": "bpmn:ExclusiveGateway",
+      "parents": [
+        "90cb7591-a175-43f4-bcf6-8694e9d1cacd"
+      ],
+      "color": {
+        "red": 183,
+        "green": 238,
+        "blue": 228,
+        "rgb": "rgb(183,238,228)"
+      },
+      "version": 3,
+      "cards": []
+    },
+    {
+      "id": "219d12db-bb8a-447e-9f6a-ff484af0ea99",
+      "description": "Checkout Initiated",
+      "laneId": "261d8be5-0cee-4607-89b0-1d30bb2ac40c",
+      "type": "bpmn:Task",
+      "conditionLabel": "Valid",
+      "parents": [
+        "944bd5e1-9892-4262-b763-b723f888d072"
+      ],
+      "color": {
+        "red": 189,
+        "green": 238,
+        "blue": 167,
+        "rgb": "rgb(189,238,167)"
+      },
+      "version": 3,
+      "cards": [
+        {
+          "id": "304128e9-400b-45ac-a7cb-174d95db0925",
+          "cardTypeId": "d1924d10-196b-4ce6-84ee-58128a611375",
+          "description": "Initiate Checkout",
+          "created": "2026-02-24T08:02:18.549Z",
+          "sortkey": "zzzzzz",
+          "done": false,
+          "version": 2,
+          "schemaId": "768f26e9-55ac-4aca-87dd-c0160392fd8b"
+        },
+        {
+          "id": "406fb0ca-eb19-4d24-bbb6-d2d85d06ac83",
+          "cardTypeId": "a760e240-2eee-4d1b-89eb-15157971d0e2",
+          "description": "Cart",
+          "created": "2026-02-24T08:02:20.337Z",
+          "sortkey": "zzzzzzn",
+          "done": false,
+          "version": 1,
+          "schemaId": "7dc60685-0bf3-4c8e-a42e-df3105424fd5"
+        },
+        {
+          "id": "467dfe13-4886-4792-81f5-c1046f38d1f9",
+          "cardTypeId": "4f991d15-9b3b-4b06-98ea-eaceaeccb95a",
+          "description": "Get Cart Summary",
+          "created": "2026-02-24T08:02:22.400Z",
+          "sortkey": "zzzzzzu",
+          "done": false,
+          "version": 2,
+          "schemaId": "9b3c3d82-bcd3-44b8-a23c-0927f8ffc865",
+          "cardinality": "one-to-one"
+        },
+        {
+          "id": "5f053281-c2d4-431a-9687-eed0528fd685",
+          "cardTypeId": "9bcd1764-3e4c-4b54-8862-e025cc3c03ee",
+          "description": "<b>Given</b> a validated Cart with status \"active\" and at least one item<br/><b>When</b> InitiateCheckout is called with cartId and optional shippingAddressId<br/><b>Then</b> the Cart status changes to \"checking_out\", the cart is locked from further modifications, and the checkout session begins",
+          "created": "2026-02-24T08:02:25.508Z",
+          "sortkey": "zzzzzzx",
+          "done": false,
+          "version": 1
+        }
+      ]
+    },
+    {
+      "id": "6b1cc420-55ee-4d27-9167-136330261add",
+      "description": "Cart Validation Failed",
+      "laneId": "9130f808-0425-4131-ab15-6296e98db8ff",
+      "type": "bpmn:Task",
+      "conditionLabel": "Invalid",
+      "parents": [
+        "944bd5e1-9892-4262-b763-b723f888d072"
+      ],
+      "color": {
+        "red": 236,
+        "green": 192,
+        "blue": 244,
+        "rgb": "rgb(236,192,244)"
+      },
+      "version": 2,
+      "cards": [
+        {
+          "id": "39779a37-2fcc-482b-9fe1-e403c45fade6",
+          "cardTypeId": "d1924d10-196b-4ce6-84ee-58128a611375",
+          "description": "Handle Validation Failure",
+          "created": "2026-02-24T08:02:28.661Z",
+          "sortkey": "zzzzzzz",
+          "done": false,
+          "version": 2,
+          "schemaId": "d71558ea-dd7d-442f-b1bf-1a4a29963925"
+        },
+        {
+          "id": "ddf9b9a1-0da0-4ddc-a1a1-2215c52046ee",
+          "cardTypeId": "a760e240-2eee-4d1b-89eb-15157971d0e2",
+          "description": "Cart",
+          "created": "2026-02-24T08:02:31.157Z",
+          "sortkey": "zzzzzzzn",
+          "done": false,
+          "version": 1,
+          "schemaId": "7dc60685-0bf3-4c8e-a42e-df3105424fd5"
+        },
+        {
+          "id": "3fdef03e-cc91-4fd2-8321-d871767ea85c",
+          "cardTypeId": "9bcd1764-3e4c-4b54-8862-e025cc3c03ee",
+          "description": "<b>Given</b> Cart validation detected issues (out-of-stock items, price changes, or expired coupon)<br/><b>When</b> HandleValidationFailure is called with cartId and failureReasons<br/><b>Then</b> the customer is notified of specific issues, affected items are flagged, and the Cart remains in \"active\" status for correction",
+          "created": "2026-02-24T08:02:33.668Z",
+          "sortkey": "zzzzzzzu",
+          "done": false,
+          "version": 1
+        }
+      ]
+    },
+    {
+      "id": "437b510b-0d1b-4b39-b214-d0092a0ef996",
+      "description": "Order Placed",
+      "laneId": "9130f808-0425-4131-ab15-6296e98db8ff",
+      "groupId": "601830fd-e5be-4c7b-9a98-6898141f9698",
+      "type": "bpmn:Task",
+      "parents": [
+        "219d12db-bb8a-447e-9f6a-ff484af0ea99"
+      ],
+      "color": {
+        "red": 167,
+        "green": 212,
+        "blue": 238,
+        "rgb": "rgb(167,212,238)"
+      },
+      "version": 2,
+      "cards": [
+        {
+          "id": "2155edfd-3ef6-4318-b665-0b498da5eb12",
+          "cardTypeId": "d1924d10-196b-4ce6-84ee-58128a611375",
+          "description": "Place Order",
+          "created": "2026-02-24T08:02:37.045Z",
+          "sortkey": "zzzzzzzx",
+          "done": false,
+          "version": 2,
+          "schemaId": "190420ba-4655-45a2-b014-2d2242b3bbd2"
+        },
+        {
+          "id": "fee4cd07-2b30-4991-aa1f-c3db27a9dbc0",
+          "cardTypeId": "a760e240-2eee-4d1b-89eb-15157971d0e2",
+          "description": "Cart",
+          "created": "2026-02-24T08:02:39.037Z",
+          "sortkey": "zzzzzzzz",
+          "done": false,
+          "version": 1,
+          "schemaId": "7dc60685-0bf3-4c8e-a42e-df3105424fd5"
+        },
+        {
+          "id": "6ac3f02c-8993-4fda-97e2-85a3526429b4",
+          "cardTypeId": "4f991d15-9b3b-4b06-98ea-eaceaeccb95a",
+          "description": "Get Cart Summary",
+          "created": "2026-02-24T08:02:40.809Z",
+          "sortkey": "zzzzzzzzn",
+          "done": false,
+          "version": 2,
+          "schemaId": "9b3c3d82-bcd3-44b8-a23c-0927f8ffc865",
+          "cardinality": "one-to-one"
+        },
+        {
+          "id": "fb678987-0e71-49ee-a9d6-de32c267d1b7",
+          "cardTypeId": "9bcd1764-3e4c-4b54-8862-e025cc3c03ee",
+          "description": "<b>Given</b> a Cart in \"checking_out\" status with a valid paymentMethodId<br/><b>When</b> PlaceOrder is called with cartId and paymentMethodId<br/><b>Then</b> the Cart status changes to \"checked_out\", an orderId is generated, cart items are reserved, and the Payment Service is notified to initiate payment",
+          "created": "2026-02-24T08:02:43.724Z",
+          "sortkey": "zzzzzzzzu",
+          "done": false,
+          "version": 1
+        }
+      ]
+    },
+    {
+      "id": "31760298-12a6-42eb-9775-999c103bf80d",
+      "description": "Payment Triggered",
+      "laneId": "f55281e0-494b-448b-b022-4cfaed267eb4",
+      "type": "bpmn:Task",
+      "parents": [
+        "437b510b-0d1b-4b39-b214-d0092a0ef996"
+      ],
+      "color": {
+        "red": 255,
+        "green": 194,
+        "blue": 141,
+        "rgb": "rgb(255,194,141)"
+      },
+      "version": 1,
+      "cards": [
+        {
+          "id": "410ff907-080b-43fb-945c-a79f896b0877",
+          "cardTypeId": "d1924d10-196b-4ce6-84ee-58128a611375",
+          "description": "Trigger Payment",
+          "created": "2026-02-24T08:02:47.099Z",
+          "sortkey": "zzzzzzzzx",
+          "done": false,
+          "version": 2,
+          "schemaId": "9b3e4b15-1f57-4ae2-bcd2-567456e5fae2"
+        },
+        {
+          "id": "1b0ff0bb-4d73-4e92-8d8c-c7e924df7ca9",
+          "cardTypeId": "a760e240-2eee-4d1b-89eb-15157971d0e2",
+          "description": "Cart",
+          "created": "2026-02-24T08:02:48.784Z",
+          "sortkey": "zzzzzzzzz",
+          "done": false,
+          "version": 1,
+          "schemaId": "7dc60685-0bf3-4c8e-a42e-df3105424fd5"
+        },
+        {
+          "id": "17273682-e023-4d07-8ac2-bf04bb2ced5a",
+          "cardTypeId": "9bcd1764-3e4c-4b54-8862-e025cc3c03ee",
+          "description": "<b>Given</b> an Order has been placed with a valid orderId, totalAmount, and paymentMethodId<br/><b>When</b> TriggerPayment is called to notify the Payment Service<br/><b>Then</b> the Payment Service receives the orderId, customerId, totalAmount, currency, and paymentMethodId, and initiates the InitiatePayment flow from the Payment Microservice",
+          "created": "2026-02-24T08:02:51.680Z",
+          "sortkey": "zzzzzzzzzn",
+          "done": false,
+          "version": 1
+        }
+      ]
+    },
+    {
+      "id": "af450ca5-616c-491f-ab5b-95f5b991210e",
+      "description": "Cart Abandoned",
+      "laneId": "9130f808-0425-4131-ab15-6296e98db8ff",
+      "type": "bpmn:Task",
+      "parents": [
+        "start"
+      ],
+      "color": {
+        "red": 206,
+        "green": 211,
+        "blue": 217,
+        "rgb": "rgb(206,211,217)"
+      },
+      "version": 1,
+      "cards": [
+        {
+          "id": "5ae3f2de-e810-406d-a809-889a68d43730",
+          "cardTypeId": "d1924d10-196b-4ce6-84ee-58128a611375",
+          "description": "Abandon Cart",
+          "created": "2026-02-24T08:02:55.253Z",
+          "sortkey": "zzzzzzzzzu",
+          "done": false,
+          "version": 2,
+          "schemaId": "9043ec03-df0e-41ff-957c-c0d91aa10ab5"
+        },
+        {
+          "id": "d99a5668-f9e7-4936-adca-80cd8952744a",
+          "cardTypeId": "a760e240-2eee-4d1b-89eb-15157971d0e2",
+          "description": "Cart",
+          "created": "2026-02-24T08:02:57.039Z",
+          "sortkey": "zzzzzzzzzx",
+          "done": false,
+          "version": 1,
+          "schemaId": "7dc60685-0bf3-4c8e-a42e-df3105424fd5"
+        },
+        {
+          "id": "eeae162f-ba1f-40f0-ad9a-96e85fc6a987",
+          "cardTypeId": "4f991d15-9b3b-4b06-98ea-eaceaeccb95a",
+          "description": "Get Cart By Customer",
+          "created": "2026-02-24T08:02:59.737Z",
+          "sortkey": "zzzzzzzzzz",
+          "done": false,
+          "version": 2,
+          "schemaId": "31ae8900-f696-4aff-9824-c7cc3c41a546",
+          "cardinality": "one-to-many"
+        },
+        {
+          "id": "c6143444-bbaa-4be0-8441-1b04e8486967",
+          "cardTypeId": "9bcd1764-3e4c-4b54-8862-e025cc3c03ee",
+          "description": "<b>Given</b> an active Cart that has been inactive beyond the configured timeout threshold<br/><b>When</b> AbandonCart is called by the background cleanup process with cartId and optional reason<br/><b>Then</b> the Cart status changes to \"abandoned\", reserved stock is released, and the customer may receive an abandonment notification email",
+          "created": "2026-02-24T08:03:03.181Z",
+          "sortkey": "zzzzzzzzzzn",
+          "done": false,
+          "version": 1
+        }
+      ]
+    }
+  ],
+  "schemas": [
+    {
+      "id": "7dc60685-0bf3-4c8e-a42e-df3105424fd5",
+      "name": "Cart",
+      "type": "Entity",
+      "boundedContext": "4f2942ad-42c9-4af7-b31a-1b1f5f358841",
+      "fields": [
+        {
+          "name": "id",
+          "description": "Unique cart identifier",
+          "exampleData": [
+            "cart_001",
+            "cart_002",
+            "cart_003"
+          ],
+          "isRequired": true,
+          "dataType": "string"
+        },
+        {
+          "name": "customerId",
+          "description": "Customer who owns the cart",
+          "exampleData": [
+            "cust_101",
+            "cust_202",
+            "cust_303"
+          ],
+          "isRequired": true,
+          "dataType": "string"
+        },
+        {
+          "name": "status",
+          "description": "Current cart status",
+          "exampleData": [
+            "active",
+            "checked_out",
+            "abandoned"
+          ],
+          "isRequired": true,
+          "dataType": "string"
+        },
+        {
+          "name": "currency",
+          "description": "ISO 4217 currency code",
+          "exampleData": [
+            "USD",
+            "EUR",
+            "GBP"
+          ],
+          "isRequired": true,
+          "dataType": "string"
+        },
+        {
+          "name": "subtotal",
+          "description": "Sum of all item subtotals in cents",
+          "exampleData": [
+            "14997",
+            "29998",
+            "4999"
+          ],
+          "isRequired": true,
+          "dataType": "number"
+        },
+        {
+          "name": "discountAmount",
+          "description": "Total discount applied in cents",
+          "exampleData": [
+            "1500",
+            "3000",
+            "0"
+          ],
+          "isRequired": false,
+          "dataType": "number"
+        },
+        {
+          "name": "totalAmount",
+          "description": "Final amount after discounts in cents",
+          "exampleData": [
+            "13497",
+            "26998",
+            "4999"
+          ],
+          "isRequired": true,
+          "dataType": "number"
+        },
+        {
+          "name": "itemCount",
+          "description": "Total number of items in cart",
+          "exampleData": [
+            "3",
+            "5",
+            "1"
+          ],
+          "isRequired": true,
+          "dataType": "number"
+        },
+        {
+          "name": "createdAt",
+          "description": "Timestamp of cart creation",
+          "exampleData": [
+            "2026-02-24T08:00:00Z",
+            "2026-02-23T14:00:00Z",
+            "2026-02-22T10:00:00Z"
+          ],
+          "isRequired": true,
+          "dataType": "string"
+        },
+        {
+          "name": "updatedAt",
+          "description": "Timestamp of last update",
+          "exampleData": [
+            "2026-02-24T08:30:00Z",
+            "2026-02-23T14:45:00Z",
+            "2026-02-22T10:05:00Z"
+          ],
+          "isRequired": true,
+          "dataType": "string"
+        },
+        {
+          "name": "items",
+          "description": "Collection of items in the cart",
+          "cardinality": "one-to-many",
+          "exampleData": [
+            "[{id: ci_001, productName: Wireless Headphones, qty: 1}]",
+            "[{id: ci_002, productName: USB-C Cable, qty: 2}]",
+            "[{id: ci_003, productName: Laptop Stand, qty: 1}]"
+          ],
+          "relatedEntityId": "c45d6b12-777f-428e-abc9-41f7d69ed752",
+          "isRequired": true,
+          "dataType": "object"
+        },
+        {
+          "name": "coupon",
+          "description": "Applied coupon discount",
+          "cardinality": "one-to-one",
+          "exampleData": [
+            "{code: SAVE10, discountType: percentage, discountValue: 10}",
+            "{code: WELCOME20, discountType: fixed_amount, discountValue: 2000}"
+          ],
+          "relatedEntityId": "a6ca3e29-665e-4548-a3f9-3d15f8eab1d9",
+          "isRequired": false,
+          "dataType": "object"
+        }
+      ]
+    },
+    {
+      "id": "c45d6b12-777f-428e-abc9-41f7d69ed752",
+      "name": "CartItem",
+      "type": "Entity",
+      "boundedContext": "4f2942ad-42c9-4af7-b31a-1b1f5f358841",
+      "fields": [
+        {
+          "name": "id",
+          "description": "Unique cart item identifier",
+          "exampleData": [
+            "ci_001",
+            "ci_002",
+            "ci_003"
+          ],
+          "isRequired": true,
+          "dataType": "string"
+        },
+        {
+          "name": "productId",
+          "description": "Product identifier from Product Service",
+          "exampleData": [
+            "prod_501",
+            "prod_502",
+            "prod_503"
+          ],
+          "isRequired": true,
+          "dataType": "string"
+        },
+        {
+          "name": "productName",
+          "description": "Product display name",
+          "exampleData": [
+            "Wireless Headphones",
+            "USB-C Cable",
+            "Laptop Stand"
+          ],
+          "isRequired": true,
+          "dataType": "string"
+        },
+        {
+          "name": "unitPrice",
+          "description": "Price per unit in cents",
+          "exampleData": [
+            "4999",
+            "1299",
+            "3499"
+          ],
+          "isRequired": true,
+          "dataType": "number"
+        },
+        {
+          "name": "quantity",
+          "description": "Number of units",
+          "exampleData": [
+            "1",
+            "2",
+            "3"
+          ],
+          "isRequired": true,
+          "dataType": "number"
+        },
+        {
+          "name": "subtotal",
+          "description": "unitPrice * quantity in cents",
+          "exampleData": [
+            "4999",
+            "2598",
+            "10497"
+          ],
+          "isRequired": true,
+          "dataType": "number"
+        },
+        {
+          "name": "addedAt",
+          "description": "Timestamp when item was added",
+          "exampleData": [
+            "2026-02-24T08:05:00Z",
+            "2026-02-24T08:10:00Z",
+            "2026-02-24T08:12:00Z"
+          ],
+          "isRequired": true,
+          "dataType": "string"
+        }
+      ]
+    },
+    {
+      "id": "a6ca3e29-665e-4548-a3f9-3d15f8eab1d9",
+      "name": "Coupon",
+      "type": "Entity",
+      "boundedContext": "4f2942ad-42c9-4af7-b31a-1b1f5f358841",
+      "fields": [
+        {
+          "name": "id",
+          "description": "Unique coupon identifier",
+          "exampleData": [
+            "cpn_001",
+            "cpn_002",
+            "cpn_003"
+          ],
+          "isRequired": true,
+          "dataType": "string"
+        },
+        {
+          "name": "code",
+          "description": "Coupon code entered by customer",
+          "exampleData": [
+            "SAVE10",
+            "WELCOME20",
+            "SUMMER15"
+          ],
+          "isRequired": true,
+          "dataType": "string"
+        },
+        {
+          "name": "discountType",
+          "description": "Type of discount applied",
+          "exampleData": [
+            "percentage",
+            "fixed_amount",
+            "percentage"
+          ],
+          "isRequired": true,
+          "dataType": "string"
+        },
+        {
+          "name": "discountValue",
+          "description": "Discount value (percentage or cents)",
+          "exampleData": [
+            "10",
+            "2000",
+            "15"
+          ],
+          "isRequired": true,
+          "dataType": "number"
+        },
+        {
+          "name": "minOrderAmount",
+          "description": "Minimum order amount required in cents",
+          "exampleData": [
+            "5000",
+            "0",
+            "10000"
+          ],
+          "isRequired": false,
+          "dataType": "number"
+        },
+        {
+          "name": "maxUses",
+          "description": "Maximum number of times coupon can be used",
+          "exampleData": [
+            "100",
+            "1000",
+            "50"
+          ],
+          "isRequired": false,
+          "dataType": "number"
+        },
+        {
+          "name": "currentUses",
+          "description": "Number of times coupon has been used",
+          "exampleData": [
+            "45",
+            "312",
+            "49"
+          ],
+          "isRequired": true,
+          "dataType": "number"
+        },
+        {
+          "name": "expiresAt",
+          "description": "Expiration timestamp",
+          "exampleData": [
+            "2026-03-31T23:59:59Z",
+            "2026-06-30T23:59:59Z",
+            "2026-04-15T23:59:59Z"
+          ],
+          "isRequired": true,
+          "dataType": "string"
+        },
+        {
+          "name": "isActive",
+          "description": "Whether the coupon is currently active",
+          "exampleData": [
+            "true",
+            "true",
+            "false"
+          ],
+          "isRequired": true,
+          "dataType": "boolean"
+        }
+      ]
+    },
+    {
+      "id": "e8e557ac-f847-4cb7-900c-e0e4224e3e6b",
+      "name": "CreateCart",
+      "type": "Command",
+      "fields": [
+        {
+          "name": "id",
+          "isRequired": false,
+          "hideInForm": true
+        },
+        {
+          "name": "customerId",
+          "isRequired": true,
+          "hideInForm": false
+        },
+        {
+          "name": "currency",
+          "isRequired": true,
+          "hideInForm": false
+        }
+      ]
+    },
+    {
+      "id": "78c9ae97-f5af-4c1a-bda9-bc11a874cfab",
+      "name": "AddItemToCart",
+      "type": "Command",
+      "fields": [
+        {
+          "name": "id",
+          "cardinality": "one-to-one",
+          "isRequired": true,
+          "hideInForm": false
+        },
+        {
+          "name": "items",
+          "relatedEntityId": "c45d6b12-777f-428e-abc9-41f7d69ed752",
+          "cardinality": "one-to-many",
+          "fields": [
+            {
+              "name": "productId"
+            },
+            {
+              "name": "productName"
+            },
+            {
+              "name": "unitPrice"
+            },
+            {
+              "name": "quantity"
+            },
+            {
+              "name": "addedAt"
+            }
+          ],
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "id": "2c1065c8-5228-4f50-aac0-592d397a123d",
+      "name": "RemoveItemFromCart",
+      "type": "Command",
+      "fields": [
+        {
+          "name": "id",
+          "cardinality": "one-to-one",
+          "isRequired": true,
+          "hideInForm": false
+        },
+        {
+          "name": "cartItemId",
+          "isRequired": true,
+          "hideInForm": false
+        }
+      ]
+    },
+    {
+      "id": "9eae5f3d-33e4-4b80-a725-dc7573a0f5a1",
+      "name": "UpdateItemQuantity",
+      "type": "Command",
+      "fields": [
+        {
+          "name": "id",
+          "cardinality": "one-to-one",
+          "isRequired": true,
+          "hideInForm": false
+        },
+        {
+          "name": "cartItemId",
+          "isRequired": true,
+          "hideInForm": false
+        },
+        {
+          "name": "quantity",
+          "isRequired": true,
+          "hideInForm": false
+        }
+      ]
+    },
+    {
+      "id": "22dc29b0-0249-4677-a507-b3bf9d50d98c",
+      "name": "ApplyCoupon",
+      "type": "Command",
+      "fields": [
+        {
+          "name": "id",
+          "cardinality": "one-to-one",
+          "isRequired": true,
+          "hideInForm": false
+        },
+        {
+          "name": "coupon",
+          "relatedEntityId": "a6ca3e29-665e-4548-a3f9-3d15f8eab1d9",
+          "cardinality": "one-to-one",
+          "fields": [
+            {
+              "name": "code"
+            },
+            {
+              "name": "discountType"
+            },
+            {
+              "name": "discountValue"
+            }
+          ],
+          "isRequired": true,
+          "hideInForm": false
+        }
+      ]
+    },
+    {
+      "id": "159510d4-26b2-45a0-a50e-1f9485b56099",
+      "name": "ValidateCart",
+      "type": "Command",
+      "fields": [
+        {
+          "name": "id",
+          "cardinality": "one-to-one",
+          "isRequired": true,
+          "hideInForm": false
+        }
+      ]
+    },
+    {
+      "id": "768f26e9-55ac-4aca-87dd-c0160392fd8b",
+      "name": "InitiateCheckout",
+      "type": "Command",
+      "fields": [
+        {
+          "name": "id",
+          "cardinality": "one-to-one",
+          "isRequired": true,
+          "hideInForm": false
+        }
+      ]
+    },
+    {
+      "id": "190420ba-4655-45a2-b014-2d2242b3bbd2",
+      "name": "PlaceOrder",
+      "type": "Command",
+      "fields": [
+        {
+          "name": "id",
+          "cardinality": "one-to-one",
+          "isRequired": true,
+          "hideInForm": false
+        },
+        {
+          "name": "paymentMethodId",
+          "isRequired": true,
+          "hideInForm": false
+        }
+      ]
+    },
+    {
+      "id": "9b3e4b15-1f57-4ae2-bcd2-567456e5fae2",
+      "name": "TriggerPayment",
+      "type": "Command",
+      "fields": [
+        {
+          "name": "id",
+          "cardinality": "one-to-one",
+          "isRequired": true,
+          "hideInForm": false
+        },
+        {
+          "name": "orderId",
+          "isRequired": true,
+          "hideInForm": false
+        },
+        {
+          "name": "paymentMethodId",
+          "isRequired": true,
+          "hideInForm": false
+        }
+      ]
+    },
+    {
+      "id": "d71558ea-dd7d-442f-b1bf-1a4a29963925",
+      "name": "HandleValidationFailure",
+      "type": "Command",
+      "fields": [
+        {
+          "name": "id",
+          "cardinality": "one-to-one",
+          "isRequired": true,
+          "hideInForm": false
+        }
+      ]
+    },
+    {
+      "id": "9043ec03-df0e-41ff-957c-c0d91aa10ab5",
+      "name": "AbandonCart",
+      "type": "Command",
+      "fields": [
+        {
+          "name": "id",
+          "cardinality": "one-to-one",
+          "isRequired": true,
+          "hideInForm": false
+        }
+      ]
+    },
+    {
+      "id": "6d0487a6-d790-4e80-8c84-e094fd5a13c6",
+      "name": "GetCartById",
+      "type": "Query",
+      "entityId": "7dc60685-0bf3-4c8e-a42e-df3105424fd5",
+      "fields": [
+        {
+          "name": "id",
+          "isFilter": true
+        },
+        {
+          "name": "customerId",
+          "isFilter": false
+        },
+        {
+          "name": "status",
+          "isFilter": false
+        },
+        {
+          "name": "currency",
+          "isFilter": false
+        },
+        {
+          "name": "subtotal",
+          "isFilter": false
+        },
+        {
+          "name": "discountAmount",
+          "isFilter": false
+        },
+        {
+          "name": "totalAmount",
+          "isFilter": false
+        },
+        {
+          "name": "itemCount",
+          "isFilter": false
+        },
+        {
+          "name": "items",
+          "relatedEntityId": "c45d6b12-777f-428e-abc9-41f7d69ed752",
+          "cardinality": "one-to-many",
+          "fields": [
+            {
+              "name": "id"
+            },
+            {
+              "name": "productId"
+            },
+            {
+              "name": "productName"
+            },
+            {
+              "name": "unitPrice"
+            },
+            {
+              "name": "quantity"
+            },
+            {
+              "name": "subtotal"
+            }
+          ],
+          "isFilter": false
+        },
+        {
+          "name": "createdAt",
+          "isFilter": false
+        },
+        {
+          "name": "updatedAt",
+          "isFilter": false
+        },
+        {
+          "name": "coupon",
+          "relatedEntityId": "a6ca3e29-665e-4548-a3f9-3d15f8eab1d9",
+          "cardinality": "one-to-one",
+          "fields": [
+            {
+              "name": "code"
+            },
+            {
+              "name": "discountType"
+            },
+            {
+              "name": "discountValue"
+            }
+          ],
+          "isFilter": false
+        }
+      ]
+    },
+    {
+      "id": "31ae8900-f696-4aff-9824-c7cc3c41a546",
+      "name": "GetCartByCustomer",
+      "type": "Query",
+      "entityId": "7dc60685-0bf3-4c8e-a42e-df3105424fd5",
+      "fields": [
+        {
+          "name": "customerId",
+          "isFilter": true
+        },
+        {
+          "name": "status",
+          "isFilter": true
+        },
+        {
+          "name": "id",
+          "isFilter": false
+        },
+        {
+          "name": "currency",
+          "isFilter": false
+        },
+        {
+          "name": "totalAmount",
+          "isFilter": false
+        },
+        {
+          "name": "itemCount",
+          "isFilter": false
+        },
+        {
+          "name": "createdAt",
+          "isFilter": false
+        },
+        {
+          "name": "updatedAt",
+          "isFilter": false
+        }
+      ]
+    },
+    {
+      "id": "9b3c3d82-bcd3-44b8-a23c-0927f8ffc865",
+      "name": "GetCartSummary",
+      "type": "Query",
+      "entityId": "7dc60685-0bf3-4c8e-a42e-df3105424fd5",
+      "fields": [
+        {
+          "name": "id",
+          "isFilter": true
+        },
+        {
+          "name": "subtotal",
+          "isFilter": false
+        },
+        {
+          "name": "discountAmount",
+          "isFilter": false
+        },
+        {
+          "name": "totalAmount",
+          "isFilter": false
+        },
+        {
+          "name": "currency",
+          "isFilter": false
+        },
+        {
+          "name": "itemCount",
+          "isFilter": false
+        },
+        {
+          "name": "items",
+          "relatedEntityId": "c45d6b12-777f-428e-abc9-41f7d69ed752",
+          "cardinality": "one-to-many",
+          "fields": [
+            {
+              "name": "productName"
+            },
+            {
+              "name": "unitPrice"
+            },
+            {
+              "name": "quantity"
+            },
+            {
+              "name": "subtotal"
+            }
+          ],
+          "isFilter": false
+        },
+        {
+          "name": "coupon",
+          "relatedEntityId": "a6ca3e29-665e-4548-a3f9-3d15f8eab1d9",
+          "cardinality": "one-to-one",
+          "fields": [
+            {
+              "name": "code"
+            },
+            {
+              "name": "discountType"
+            },
+            {
+              "name": "discountValue"
+            },
+            {
+              "name": "minOrderAmount"
+            }
+          ],
+          "isFilter": false
+        }
+      ]
+    }
+  ],
+  "cardTypes": [
+    {
+      "id": "bbd13b5f-c366-4355-b85e-c9d9375e7a65",
+      "title": "Problem",
+      "description": "A problem that the company faces in this step of the process.",
+      "showInBacklog": false,
+      "defaultType": false,
+      "generateWithAI": false
+    },
+    {
+      "id": "4f991d15-9b3b-4b06-98ea-eaceaeccb95a",
+      "title": "Read Model",
+      "description": "The name of a query, state view, or projection provided to the actor BEFORE invoking the command that triggers the event — not after. For example: \"Get Invoice Details\" or \"Fetch Customer Orders\".",
+      "showInBacklog": false,
+      "domainModelRole": "ReadModel",
+      "defaultType": false,
+      "generateWithAI": true
+    },
+    {
+      "id": "768e8ccf-7878-4990-a1d1-abaa5d4d1a22",
+      "title": "User Story",
+      "description": "A user story describes a feature of a software system used in this step of the process in the format: As [a user persona], I want [to perform this action] so that [I can accomplish this goal].",
+      "showInBacklog": true,
+      "defaultType": true,
+      "generateWithAI": false
+    },
+    {
+      "id": "191e29be-e6bd-4d9e-98f1-fd0888107cbc",
+      "title": "Opportunity",
+      "description": "A positive improvement or opportunity that can help the business in this step of the process.",
+      "showInBacklog": false,
+      "defaultType": false,
+      "generateWithAI": false
+    },
+    {
+      "id": "a760e240-2eee-4d1b-89eb-15157971d0e2",
+      "title": "Aggregate Root",
+      "description": "The name of the aggregate root (or the main entity) that the command is invoked on in this step of the process.",
+      "showInBacklog": false,
+      "domainModelRole": "AggregateRoot",
+      "defaultType": false,
+      "generateWithAI": true
+    },
+    {
+      "id": "9bcd1764-3e4c-4b54-8862-e025cc3c03ee",
+      "title": "Given-When-Then",
+      "description": "An acceptance test in the Given-When-Then style for this step of the process.",
+      "showInBacklog": true,
+      "domainModelRole": "GivenWhenThen",
+      "defaultType": false,
+      "generateWithAI": true
+    },
+    {
+      "id": "d1924d10-196b-4ce6-84ee-58128a611375",
+      "title": "Command",
+      "description": "The name of the command that is invoked by the actor on the aggregate in this step of the process. For example: \"Create Invoice\" or \"Send Email\".",
+      "showInBacklog": false,
+      "domainModelRole": "Command",
+      "defaultType": false,
+      "generateWithAI": true
+    }
+  ],
+  "boundedContexts": [
+    {
+      "id": "4f2942ad-42c9-4af7-b31a-1b1f5f358841",
+      "name": "Cart"
+    }
+  ],
+  "groups": [
+    {
+      "id": "d695effe-9f16-4a94-bdcb-e2f5aff0c230",
+      "name": "Cart Management",
+      "startSlotX": 0
+    },
+    {
+      "id": "5297aa4e-68d9-4617-9581-1055fc984ff1",
+      "name": "Promotions",
+      "startSlotX": 3
+    },
+    {
+      "id": "21ccc881-ec72-4d55-9b6c-e7e32aaabf74",
+      "name": "Checkout",
+      "startSlotX": 5
+    },
+    {
+      "id": "601830fd-e5be-4c7b-9a98-6898141f9698",
+      "name": "Order Placement",
+      "startSlotX": 8
+    }
+  ],
+  "releases": [],
+  "version": 220,
+  "createdAt": "2026-02-24T07:56:54.118Z",
+  "updatedAt": "2026-02-24T09:08:32.401Z"
+}
