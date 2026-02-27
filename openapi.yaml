@@ -645,7 +645,7 @@ components:
         cartItemId:
           type: string
         quantity:
-          type: string
+          type: number
       required:
         - id
         - cartItemId
