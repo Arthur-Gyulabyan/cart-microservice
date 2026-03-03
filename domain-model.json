@@ -1,499 +1,987 @@
 {
-  "version": 3,
+  "$schema": "https://app.qlerify.com/schemas/domain-model/v1.json",
+  "version": 1,
   "boundedContext": "Cart",
-  "lanes": [
+  "roles": [
     "Customer",
     "Cart Service",
     "Product Service",
     "Payment Service"
   ],
-  "domainEvents": [
-    {
+  "domainEvents": {
+    "CartCreated": {
       "event": "Cart Created",
       "role": "Customer",
       "follows": [
         "start"
       ],
-      "command": "Create Cart",
-      "aggregateRoot": "Cart",
-      "acceptanceCriteria": "Given a customer is browsing the store and has no active cart, when CreateCart is called with customerId and currency, then a new Cart is created with status \"active\", zero totals, and a unique cartId is generated."
+      "command": {
+        "$ref": "#/schemas/commands/CreateCart"
+      },
+      "aggregateRoot": {
+        "$ref": "#/schemas/entities/Cart"
+      },
+      "acceptanceCriteria": "<b>Given</b> a customer is browsing the store and has no active cart<br/><b>When</b> CreateCart is called with customerId and currency<br/><b>Then</b> a new Cart is created with status \"active\", zero totals, and a unique cartId is generated"
     },
-    {
+    "ItemAddedToCart": {
       "event": "Item Added to Cart",
       "role": "Customer",
       "follows": [
-        "Cart Created"
-      ],
-      "command": "Add Item To Cart",
-      "aggregateRoot": "Cart",
-      "readModels": [
         {
-          "name": "GetCartById",
-          "cardinality": "one-to-one"
+          "$ref": "#/domainEvents/CartCreated"
         }
       ],
-      "acceptanceCriteria": "Given an active Cart exists and the product is in stock, when AddItemToCart is called with productId, productName, unitPrice, and quantity, then a new CartItem is created, the Cart subtotal and totalAmount are recalculated, and itemCount is incremented."
+      "command": {
+        "$ref": "#/schemas/commands/AddItemToCart"
+      },
+      "aggregateRoot": {
+        "$ref": "#/schemas/entities/Cart"
+      },
+      "readModels": [
+        {
+          "$ref": "#/schemas/queries/GetCartById"
+        }
+      ],
+      "acceptanceCriteria": "<b>Given</b> an active Cart exists and the product is in stock<br/><b>When</b> AddItemToCart is called with productId, productName, unitPrice, and quantity<br/><b>Then</b> a new CartItem is created, the Cart subtotal and totalAmount are recalculated, and itemCount is incremented"
     },
-    {
+    "ItemRemovedFromCart": {
       "event": "Item Removed from Cart",
       "role": "Customer",
       "follows": [
-        "Item Added to Cart"
-      ],
-      "command": "Remove Item From Cart",
-      "aggregateRoot": "Cart",
-      "readModels": [
         {
-          "name": "GetCartById",
-          "cardinality": "one-to-one"
+          "$ref": "#/domainEvents/ItemAddedToCart"
         }
       ],
-      "acceptanceCriteria": "Given an active Cart with at least one CartItem, when RemoveItemFromCart is called with cartId and cartItemId, then the CartItem is deleted, the Cart subtotal and totalAmount are recalculated, and itemCount is decremented."
+      "command": {
+        "$ref": "#/schemas/commands/RemoveItemFromCart"
+      },
+      "aggregateRoot": {
+        "$ref": "#/schemas/entities/Cart"
+      },
+      "readModels": [
+        {
+          "$ref": "#/schemas/queries/GetCartById"
+        }
+      ],
+      "acceptanceCriteria": "<b>Given</b> an active Cart with at least one CartItem<br/><b>When</b> RemoveItemFromCart is called with cartId and cartItemId<br/><b>Then</b> the CartItem is deleted, the Cart subtotal and totalAmount are recalculated, and itemCount is decremented"
     },
-    {
+    "ItemQuantityUpdated": {
       "event": "Item Quantity Updated",
       "role": "Customer",
+      "group": "Promotions",
       "follows": [
-        "Item Removed from Cart"
-      ],
-      "command": "Update Item Quantity",
-      "aggregateRoot": "Cart",
-      "readModels": [
         {
-          "name": "GetCartById",
-          "cardinality": "one-to-one"
+          "$ref": "#/domainEvents/ItemRemovedFromCart"
         }
       ],
-      "acceptanceCriteria": "Given an active Cart with a CartItem for the specified product, when UpdateItemQuantity is called with cartItemId and newQuantity, then the CartItem quantity and subtotal are updated, and the Cart subtotal and totalAmount are recalculated."
+      "command": {
+        "$ref": "#/schemas/commands/UpdateItemQuantity"
+      },
+      "aggregateRoot": {
+        "$ref": "#/schemas/entities/Cart"
+      },
+      "readModels": [
+        {
+          "$ref": "#/schemas/queries/GetCartById"
+        }
+      ],
+      "acceptanceCriteria": "<b>Given</b> an active Cart with a CartItem for the specified product<br/><b>When</b> UpdateItemQuantity is called with cartItemId and newQuantity<br/><b>Then</b> the CartItem quantity and subtotal are updated, and the Cart subtotal and totalAmount are recalculated"
     },
-    {
+    "CouponApplied": {
       "event": "Coupon Applied",
       "role": "Customer",
       "follows": [
-        "Item Quantity Updated"
-      ],
-      "command": "Apply Coupon",
-      "aggregateRoot": "Cart",
-      "readModels": [
         {
-          "name": "GetCartSummary",
-          "cardinality": "one-to-one"
+          "$ref": "#/domainEvents/ItemQuantityUpdated"
         }
       ],
-      "acceptanceCriteria": "Given an active Cart with items and a valid coupon code exists, when ApplyCoupon is called with the couponCode, then the Coupon is validated (not expired, usage limit not reached, minimum order met), the discount is calculated and applied, and the Cart totalAmount is updated."
+      "command": {
+        "$ref": "#/schemas/commands/ApplyCoupon"
+      },
+      "aggregateRoot": {
+        "$ref": "#/schemas/entities/Cart"
+      },
+      "readModels": [
+        {
+          "$ref": "#/schemas/queries/GetCartSummary"
+        }
+      ],
+      "acceptanceCriteria": "<b>Given</b> an active Cart with items and a valid coupon code exists<br/><b>When</b> ApplyCoupon is called with the couponCode<br/><b>Then</b> the Coupon is validated (not expired, usage limit not reached, minimum order met), the discount is calculated and applied, and the Cart totalAmount is updated"
     },
-    {
+    "CartValidated": {
       "event": "Cart Validated",
       "role": "Product Service",
+      "group": "Checkout",
       "follows": [
-        "Coupon Applied"
+        {
+          "$ref": "#/domainEvents/CouponApplied"
+        }
       ],
-      "command": "Validate Cart",
-      "aggregateRoot": "Cart",
+      "command": {
+        "$ref": "#/schemas/commands/ValidateCart"
+      },
+      "aggregateRoot": {
+        "$ref": "#/schemas/entities/Cart"
+      },
       "readModels": [
         {
-          "name": "GetCartSummary",
-          "cardinality": "one-to-one"
+          "$ref": "#/schemas/queries/GetCartSummary"
         }
       ],
-      "acceptanceCriteria": "Given an active Cart with items ready for checkout, when ValidateCart is called by the Product Service, then all items are checked for stock availability and price accuracy, and the cart is marked as validated or validation errors are returned."
+      "acceptanceCriteria": "<b>Given</b> an active Cart with items ready for checkout<br/><b>When</b> ValidateCart is called by the Product Service<br/><b>Then</b> all items are checked for stock availability and price accuracy, and the cart is marked as validated or validation errors are returned"
     },
-    {
-      "event": "Validation Decision",
-      "role": "Cart Service",
-      "follows": [
-        "Cart Validated"
-      ],
-      "type": "decision",
-      "branches": [
-        {
-          "condition": "Valid",
-          "leadsTo": "Checkout Initiated"
-        },
-        {
-          "condition": "Invalid",
-          "leadsTo": "Cart Validation Failed"
-        }
-      ]
-    },
-    {
+    "CheckoutInitiated": {
       "event": "Checkout Initiated",
       "role": "Customer",
       "follows": [
-        "Validation Decision"
-      ],
-      "conditionLabel": "Valid",
-      "command": "Initiate Checkout",
-      "aggregateRoot": "Cart",
-      "readModels": [
         {
-          "name": "GetCartSummary",
-          "cardinality": "one-to-one"
+          "$ref": "#/domainEvents/CartValidated"
         }
       ],
-      "acceptanceCriteria": "Given a validated Cart with status \"active\" and at least one item, when InitiateCheckout is called with cartId, then the Cart status changes to \"checking_out\", the cart is locked from further modifications, and the checkout session begins."
+      "command": {
+        "$ref": "#/schemas/commands/InitiateCheckout"
+      },
+      "aggregateRoot": {
+        "$ref": "#/schemas/entities/Cart"
+      },
+      "readModels": [
+        {
+          "$ref": "#/schemas/queries/GetCartSummary"
+        }
+      ],
+      "acceptanceCriteria": "<b>Given</b> a validated Cart with status \"active\" and at least one item<br/><b>When</b> InitiateCheckout is called with cartId and optional shippingAddressId<br/><b>Then</b> the Cart status changes to \"checking_out\", the cart is locked from further modifications, and the checkout session begins"
     },
-    {
+    "CartValidationFailed": {
       "event": "Cart Validation Failed",
       "role": "Cart Service",
       "follows": [
-        "Validation Decision"
-      ],
-      "conditionLabel": "Invalid",
-      "command": "Handle Validation Failure",
-      "aggregateRoot": "Cart",
-      "acceptanceCriteria": "Given Cart validation detected issues (out-of-stock items, price changes, or expired coupon), when HandleValidationFailure is called with cartId, then the customer is notified of specific issues, affected items are flagged, and the Cart remains in \"active\" status for correction."
-    },
-    {
-      "event": "Order Placed",
-      "role": "Cart Service",
-      "follows": [
-        "Checkout Initiated"
-      ],
-      "command": "Place Order",
-      "aggregateRoot": "Cart",
-      "readModels": [
         {
-          "name": "GetCartSummary",
-          "cardinality": "one-to-one"
+          "$ref": "#/domainEvents/CartValidated"
         }
       ],
-      "acceptanceCriteria": "Given a Cart in \"checking_out\" status with a valid paymentMethodId, when PlaceOrder is called with cartId and paymentMethodId, then the Cart status changes to \"checked_out\", an orderId is generated, cart items are reserved, and the Payment Service is notified to initiate payment."
+      "command": {
+        "$ref": "#/schemas/commands/HandleValidationFailure"
+      },
+      "aggregateRoot": {
+        "$ref": "#/schemas/entities/Cart"
+      },
+      "acceptanceCriteria": "<b>Given</b> Cart validation detected issues (out-of-stock items, price changes, or expired coupon)<br/><b>When</b> HandleValidationFailure is called with cartId and failureReasons<br/><b>Then</b> the customer is notified of specific issues, affected items are flagged, and the Cart remains in \"active\" status for correction"
     },
-    {
+    "OrderPlaced": {
+      "event": "Order Placed",
+      "role": "Cart Service",
+      "group": "Order Placement",
+      "follows": [
+        {
+          "$ref": "#/domainEvents/CheckoutInitiated"
+        }
+      ],
+      "command": {
+        "$ref": "#/schemas/commands/PlaceOrder"
+      },
+      "aggregateRoot": {
+        "$ref": "#/schemas/entities/Cart"
+      },
+      "readModels": [
+        {
+          "$ref": "#/schemas/queries/GetCartSummary"
+        }
+      ],
+      "acceptanceCriteria": "<b>Given</b> a Cart in \"checking_out\" status with a valid paymentMethodId<br/><b>When</b> PlaceOrder is called with cartId and paymentMethodId<br/><b>Then</b> the Cart status changes to \"checked_out\", an orderId is generated, cart items are reserved, and the Payment Service is notified to initiate payment"
+    },
+    "PaymentTriggered": {
       "event": "Payment Triggered",
       "role": "Payment Service",
       "follows": [
-        "Order Placed"
+        {
+          "$ref": "#/domainEvents/OrderPlaced"
+        }
       ],
-      "command": "Trigger Payment",
-      "aggregateRoot": "Cart",
-      "acceptanceCriteria": "Given an Order has been placed with a valid orderId, totalAmount, and paymentMethodId, when TriggerPayment is called to notify the Payment Service, then the Payment Service receives the orderId, customerId, totalAmount, currency, and paymentMethodId, and initiates the InitiatePayment flow from the Payment Microservice."
+      "command": {
+        "$ref": "#/schemas/commands/TriggerPayment"
+      },
+      "aggregateRoot": {
+        "$ref": "#/schemas/entities/Cart"
+      },
+      "acceptanceCriteria": "<b>Given</b> an Order has been placed with a valid orderId, totalAmount, and paymentMethodId<br/><b>When</b> TriggerPayment is called to notify the Payment Service<br/><b>Then</b> the Payment Service receives the orderId, customerId, totalAmount, currency, and paymentMethodId, and initiates the InitiatePayment flow from the Payment Microservice"
     },
-    {
+    "CartAbandoned": {
       "event": "Cart Abandoned",
       "role": "Cart Service",
       "follows": [
         "start"
       ],
-      "command": "Abandon Cart",
-      "aggregateRoot": "Cart",
+      "command": {
+        "$ref": "#/schemas/commands/AbandonCart"
+      },
+      "aggregateRoot": {
+        "$ref": "#/schemas/entities/Cart"
+      },
       "readModels": [
         {
-          "name": "GetCartByCustomer",
-          "cardinality": "one-to-many"
+          "$ref": "#/schemas/queries/GetCartByCustomer",
+          "array": true
         }
       ],
-      "acceptanceCriteria": "Given an active Cart that has been inactive beyond the configured timeout threshold, when AbandonCart is called by the background cleanup process with cartId, then the Cart status changes to \"abandoned\", reserved stock is released, and the customer may receive an abandonment notification email."
+      "acceptanceCriteria": "<b>Given</b> an active Cart that has been inactive beyond the configured timeout threshold<br/><b>When</b> AbandonCart is called by the background cleanup process with cartId and optional reason<br/><b>Then</b> the Cart status changes to \"abandoned\", reserved stock is released, and the customer may receive an abandonment notification email"
     }
-  ],
+  },
   "schemas": {
-    "commands": [
-      {
-        "name": "CreateCart",
+    "commands": {
+      "CreateCart": {
         "type": "Command",
+        "required": [
+          "customerId",
+          "currency"
+        ],
         "fields": [
           {
+            "name": "id",
+            "hideInForm": true
+          },
+          {
             "name": "customerId",
-            "isRequired": true
+            "hideInForm": false
           },
           {
             "name": "currency",
-            "isRequired": true
+            "hideInForm": false
           }
         ]
       },
-      {
-        "name": "AddItemToCart",
+      "AddItemToCart": {
         "type": "Command",
+        "required": [
+          "id"
+        ],
         "fields": [
           {
             "name": "id",
-            "isRequired": true
+            "hideInForm": false
           },
           {
             "name": "items",
-            "relatedEntity": "CartItem",
+            "relatedEntity": {
+              "$ref": "#/schemas/entities/CartItem"
+            },
+            "array": true,
             "fields": [
-              { "name": "productId" },
-              { "name": "productName" },
-              { "name": "unitPrice" },
-              { "name": "quantity" },
-              { "name": "addedAt" }
+              {
+                "name": "productId"
+              },
+              {
+                "name": "productName"
+              },
+              {
+                "name": "unitPrice"
+              },
+              {
+                "name": "quantity"
+              },
+              {
+                "name": "addedAt"
+              }
             ]
           }
         ]
       },
-      {
-        "name": "RemoveItemFromCart",
+      "RemoveItemFromCart": {
         "type": "Command",
+        "required": [
+          "id",
+          "cartItemId"
+        ],
         "fields": [
           {
             "name": "id",
-            "isRequired": true
+            "hideInForm": false
           },
           {
             "name": "cartItemId",
-            "isRequired": true
+            "hideInForm": false
           }
         ]
       },
-      {
-        "name": "UpdateItemQuantity",
+      "UpdateItemQuantity": {
         "type": "Command",
+        "required": [
+          "id",
+          "cartItemId",
+          "quantity"
+        ],
         "fields": [
           {
             "name": "id",
-            "isRequired": true
+            "hideInForm": false
           },
           {
             "name": "cartItemId",
-            "isRequired": true
+            "hideInForm": false
           },
           {
             "name": "quantity",
-            "isRequired": true
+            "hideInForm": false
           }
         ]
       },
-      {
-        "name": "ApplyCoupon",
+      "ApplyCoupon": {
         "type": "Command",
+        "required": [
+          "id",
+          "coupon"
+        ],
         "fields": [
           {
             "name": "id",
-            "isRequired": true
+            "hideInForm": false
           },
           {
             "name": "coupon",
-            "relatedEntity": "Coupon",
+            "relatedEntity": {
+              "$ref": "#/schemas/entities/Coupon"
+            },
             "fields": [
-              { "name": "code" },
-              { "name": "discountType" },
-              { "name": "discountValue" }
+              {
+                "name": "code"
+              },
+              {
+                "name": "discountType"
+              },
+              {
+                "name": "discountValue"
+              }
             ],
-            "isRequired": true
+            "hideInForm": false
           }
         ]
       },
-      {
-        "name": "ValidateCart",
+      "ValidateCart": {
         "type": "Command",
+        "required": [
+          "id"
+        ],
         "fields": [
           {
             "name": "id",
-            "isRequired": true
+            "hideInForm": false
           }
         ]
       },
-      {
-        "name": "InitiateCheckout",
+      "InitiateCheckout": {
         "type": "Command",
+        "required": [
+          "id"
+        ],
         "fields": [
           {
             "name": "id",
-            "isRequired": true
+            "hideInForm": false
           }
         ]
       },
-      {
-        "name": "PlaceOrder",
+      "PlaceOrder": {
         "type": "Command",
+        "required": [
+          "id",
+          "paymentMethodId"
+        ],
         "fields": [
           {
             "name": "id",
-            "isRequired": true
+            "hideInForm": false
           },
           {
             "name": "paymentMethodId",
-            "isRequired": true
+            "hideInForm": false
           }
         ]
       },
-      {
-        "name": "TriggerPayment",
+      "TriggerPayment": {
         "type": "Command",
+        "required": [
+          "id",
+          "orderId",
+          "paymentMethodId"
+        ],
         "fields": [
           {
             "name": "id",
-            "isRequired": true
+            "hideInForm": false
           },
           {
             "name": "orderId",
-            "isRequired": true
+            "hideInForm": false
           },
           {
             "name": "paymentMethodId",
-            "isRequired": true
+            "hideInForm": false
           }
         ]
       },
-      {
-        "name": "HandleValidationFailure",
+      "HandleValidationFailure": {
         "type": "Command",
+        "required": [
+          "id"
+        ],
         "fields": [
           {
             "name": "id",
-            "isRequired": true
+            "hideInForm": false
           }
         ]
       },
-      {
-        "name": "AbandonCart",
+      "AbandonCart": {
         "type": "Command",
+        "required": [
+          "id"
+        ],
         "fields": [
           {
             "name": "id",
-            "isRequired": true
+            "hideInForm": false
           }
         ]
       }
-    ],
-    "queries": [
-      {
-        "name": "GetCartById",
+    },
+    "queries": {
+      "GetCartById": {
         "type": "Query",
-        "entity": "Cart",
+        "entity": {
+          "$ref": "#/schemas/entities/Cart"
+        },
         "fields": [
-          { "name": "id", "isFilter": true },
-          { "name": "customerId" },
-          { "name": "status" },
-          { "name": "currency" },
-          { "name": "subtotal" },
-          { "name": "discountAmount" },
-          { "name": "totalAmount" },
-          { "name": "itemCount" },
           {
-            "name": "items",
-            "relatedEntity": "CartItem",
-            "fields": [
-              { "name": "id" },
-              { "name": "productId" },
-              { "name": "productName" },
-              { "name": "unitPrice" },
-              { "name": "quantity" },
-              { "name": "subtotal" }
-            ]
+            "name": "id",
+            "isFilter": true
           },
-          { "name": "createdAt" },
-          { "name": "updatedAt" },
           {
-            "name": "coupon",
-            "relatedEntity": "Coupon",
-            "fields": [
-              { "name": "code" },
-              { "name": "discountType" },
-              { "name": "discountValue" }
-            ]
-          }
-        ]
-      },
-      {
-        "name": "GetCartByCustomer",
-        "type": "Query",
-        "entity": "Cart",
-        "fields": [
-          { "name": "customerId", "isFilter": true },
-          { "name": "status", "isFilter": true },
-          { "name": "id" },
-          { "name": "currency" },
-          { "name": "totalAmount" },
-          { "name": "itemCount" },
-          { "name": "createdAt" },
-          { "name": "updatedAt" }
-        ]
-      },
-      {
-        "name": "GetCartSummary",
-        "type": "Query",
-        "entity": "Cart",
-        "fields": [
-          { "name": "id", "isFilter": true },
-          { "name": "subtotal" },
-          { "name": "discountAmount" },
-          { "name": "totalAmount" },
-          { "name": "currency" },
-          { "name": "itemCount" },
+            "name": "customerId"
+          },
+          {
+            "name": "status"
+          },
+          {
+            "name": "currency"
+          },
+          {
+            "name": "subtotal"
+          },
+          {
+            "name": "discountAmount"
+          },
+          {
+            "name": "totalAmount"
+          },
+          {
+            "name": "itemCount"
+          },
           {
             "name": "items",
-            "relatedEntity": "CartItem",
+            "relatedEntity": {
+              "$ref": "#/schemas/entities/CartItem"
+            },
             "fields": [
-              { "name": "productName" },
-              { "name": "unitPrice" },
-              { "name": "quantity" },
-              { "name": "subtotal" }
+              {
+                "name": "id"
+              },
+              {
+                "name": "productId"
+              },
+              {
+                "name": "productName"
+              },
+              {
+                "name": "unitPrice"
+              },
+              {
+                "name": "quantity"
+              },
+              {
+                "name": "subtotal"
+              }
             ]
           },
           {
+            "name": "createdAt"
+          },
+          {
+            "name": "updatedAt"
+          },
+          {
             "name": "coupon",
-            "relatedEntity": "Coupon",
+            "relatedEntity": {
+              "$ref": "#/schemas/entities/Coupon"
+            },
             "fields": [
-              { "name": "code" },
-              { "name": "discountType" },
-              { "name": "discountValue" },
-              { "name": "minOrderAmount" }
+              {
+                "name": "code"
+              },
+              {
+                "name": "discountType"
+              },
+              {
+                "name": "discountValue"
+              }
+            ]
+          }
+        ]
+      },
+      "GetCartByCustomer": {
+        "type": "Query",
+        "entity": {
+          "$ref": "#/schemas/entities/Cart"
+        },
+        "fields": [
+          {
+            "name": "customerId",
+            "isFilter": true
+          },
+          {
+            "name": "status",
+            "isFilter": true
+          },
+          {
+            "name": "id"
+          },
+          {
+            "name": "currency"
+          },
+          {
+            "name": "totalAmount"
+          },
+          {
+            "name": "itemCount"
+          },
+          {
+            "name": "createdAt"
+          },
+          {
+            "name": "updatedAt"
+          }
+        ]
+      },
+      "GetCartSummary": {
+        "type": "Query",
+        "entity": {
+          "$ref": "#/schemas/entities/Cart"
+        },
+        "fields": [
+          {
+            "name": "id",
+            "isFilter": true
+          },
+          {
+            "name": "subtotal"
+          },
+          {
+            "name": "discountAmount"
+          },
+          {
+            "name": "totalAmount"
+          },
+          {
+            "name": "currency"
+          },
+          {
+            "name": "itemCount"
+          },
+          {
+            "name": "items",
+            "relatedEntity": {
+              "$ref": "#/schemas/entities/CartItem"
+            },
+            "fields": [
+              {
+                "name": "productName"
+              },
+              {
+                "name": "unitPrice"
+              },
+              {
+                "name": "quantity"
+              },
+              {
+                "name": "subtotal"
+              }
+            ]
+          },
+          {
+            "name": "coupon",
+            "relatedEntity": {
+              "$ref": "#/schemas/entities/Coupon"
+            },
+            "fields": [
+              {
+                "name": "code"
+              },
+              {
+                "name": "discountType"
+              },
+              {
+                "name": "discountValue"
+              },
+              {
+                "name": "minOrderAmount"
+              }
             ]
           }
         ]
       }
-    ],
-    "entities": [
-      {
-        "name": "Cart",
+    },
+    "entities": {
+      "Cart": {
         "type": "Entity",
         "boundedContext": "Cart",
+        "required": [
+          "id",
+          "customerId",
+          "status",
+          "currency",
+          "subtotal",
+          "totalAmount",
+          "itemCount",
+          "createdAt",
+          "updatedAt",
+          "items"
+        ],
         "fields": [
-          { "name": "id", "exampleData": ["cart_001", "cart_002", "cart_003"], "isRequired": true, "dataType": "string" },
-          { "name": "customerId", "exampleData": ["cust_101", "cust_202", "cust_303"], "isRequired": true, "dataType": "string" },
-          { "name": "status", "exampleData": ["active", "checked_out", "abandoned"], "isRequired": true, "dataType": "string" },
-          { "name": "currency", "exampleData": ["USD", "EUR", "GBP"], "isRequired": true, "dataType": "string" },
-          { "name": "subtotal", "exampleData": ["14997", "29998", "4999"], "isRequired": true, "dataType": "number" },
-          { "name": "discountAmount", "exampleData": ["1500", "3000", "0"], "dataType": "number" },
-          { "name": "totalAmount", "exampleData": ["13497", "26998", "4999"], "isRequired": true, "dataType": "number" },
-          { "name": "itemCount", "exampleData": ["3", "5", "1"], "isRequired": true, "dataType": "number" },
-          { "name": "createdAt", "exampleData": ["2026-02-24T08:00:00Z", "2026-02-23T14:00:00Z", "2026-02-22T10:00:00Z"], "isRequired": true, "dataType": "string" },
-          { "name": "updatedAt", "exampleData": ["2026-02-24T08:30:00Z", "2026-02-23T14:45:00Z", "2026-02-22T10:05:00Z"], "isRequired": true, "dataType": "string" },
-          { "name": "items", "cardinality": "one-to-many", "relatedEntity": "CartItem", "isRequired": true, "dataType": "object" },
-          { "name": "coupon", "cardinality": "one-to-one", "relatedEntity": "Coupon", "dataType": "object" }
+          {
+            "name": "id",
+            "description": "Unique cart identifier",
+            "exampleData": [
+              "cart_001",
+              "cart_002",
+              "cart_003"
+            ],
+            "dataType": "string"
+          },
+          {
+            "name": "customerId",
+            "description": "Customer who owns the cart",
+            "exampleData": [
+              "cust_101",
+              "cust_202",
+              "cust_303"
+            ],
+            "dataType": "string"
+          },
+          {
+            "name": "status",
+            "description": "Current cart status",
+            "exampleData": [
+              "active",
+              "checked_out",
+              "abandoned"
+            ],
+            "dataType": "string"
+          },
+          {
+            "name": "currency",
+            "description": "ISO 4217 currency code",
+            "exampleData": [
+              "USD",
+              "EUR",
+              "GBP"
+            ],
+            "dataType": "string"
+          },
+          {
+            "name": "subtotal",
+            "description": "Sum of all item subtotals in cents",
+            "exampleData": [
+              "14997",
+              "29998",
+              "4999"
+            ],
+            "dataType": "number"
+          },
+          {
+            "name": "discountAmount",
+            "description": "Total discount applied in cents",
+            "exampleData": [
+              "1500",
+              "3000",
+              "0"
+            ],
+            "dataType": "number"
+          },
+          {
+            "name": "totalAmount",
+            "description": "Final amount after discounts in cents",
+            "exampleData": [
+              "13497",
+              "26998",
+              "4999"
+            ],
+            "dataType": "number"
+          },
+          {
+            "name": "itemCount",
+            "description": "Total number of items in cart",
+            "exampleData": [
+              "3",
+              "5",
+              "1"
+            ],
+            "dataType": "number"
+          },
+          {
+            "name": "createdAt",
+            "description": "Timestamp of cart creation",
+            "exampleData": [
+              "2026-02-24T08:00:00Z",
+              "2026-02-23T14:00:00Z",
+              "2026-02-22T10:00:00Z"
+            ],
+            "dataType": "string"
+          },
+          {
+            "name": "updatedAt",
+            "description": "Timestamp of last update",
+            "exampleData": [
+              "2026-02-24T08:30:00Z",
+              "2026-02-23T14:45:00Z",
+              "2026-02-22T10:05:00Z"
+            ],
+            "dataType": "string"
+          },
+          {
+            "name": "items",
+            "description": "Collection of items in the cart",
+            "array": true,
+            "exampleData": [
+              "[{id: ci_001, productName: Wireless Headphones, qty: 1}]",
+              "[{id: ci_002, productName: USB-C Cable, qty: 2}]",
+              "[{id: ci_003, productName: Laptop Stand, qty: 1}]"
+            ],
+            "relatedEntity": {
+              "$ref": "#/schemas/entities/CartItem"
+            },
+            "dataType": "object"
+          },
+          {
+            "name": "coupon",
+            "description": "Applied coupon discount",
+            "exampleData": [
+              "{code: SAVE10, discountType: percentage, discountValue: 10}",
+              "{code: WELCOME20, discountType: fixed_amount, discountValue: 2000}"
+            ],
+            "relatedEntity": {
+              "$ref": "#/schemas/entities/Coupon"
+            },
+            "dataType": "object"
+          }
         ]
       },
-      {
-        "name": "CartItem",
+      "CartItem": {
         "type": "Entity",
         "boundedContext": "Cart",
+        "required": [
+          "id",
+          "productId",
+          "productName",
+          "unitPrice",
+          "quantity",
+          "subtotal",
+          "addedAt"
+        ],
         "fields": [
-          { "name": "id", "exampleData": ["ci_001", "ci_002", "ci_003"], "isRequired": true, "dataType": "string" },
-          { "name": "productId", "exampleData": ["prod_501", "prod_502", "prod_503"], "isRequired": true, "dataType": "string" },
-          { "name": "productName", "exampleData": ["Wireless Headphones", "USB-C Cable", "Laptop Stand"], "isRequired": true, "dataType": "string" },
-          { "name": "unitPrice", "exampleData": ["4999", "1299", "3499"], "isRequired": true, "dataType": "number" },
-          { "name": "quantity", "exampleData": ["1", "2", "3"], "isRequired": true, "dataType": "number" },
-          { "name": "subtotal", "exampleData": ["4999", "2598", "10497"], "isRequired": true, "dataType": "number" },
-          { "name": "addedAt", "exampleData": ["2026-02-24T08:05:00Z", "2026-02-24T08:10:00Z", "2026-02-24T08:12:00Z"], "isRequired": true, "dataType": "string" }
+          {
+            "name": "id",
+            "description": "Unique cart item identifier",
+            "exampleData": [
+              "ci_001",
+              "ci_002",
+              "ci_003"
+            ],
+            "dataType": "string"
+          },
+          {
+            "name": "productId",
+            "description": "Product identifier from Product Service",
+            "exampleData": [
+              "prod_501",
+              "prod_502",
+              "prod_503"
+            ],
+            "dataType": "string"
+          },
+          {
+            "name": "productName",
+            "description": "Product display name",
+            "exampleData": [
+              "Wireless Headphones",
+              "USB-C Cable",
+              "Laptop Stand"
+            ],
+            "dataType": "string"
+          },
+          {
+            "name": "unitPrice",
+            "description": "Price per unit in cents",
+            "exampleData": [
+              "4999",
+              "1299",
+              "3499"
+            ],
+            "dataType": "number"
+          },
+          {
+            "name": "quantity",
+            "description": "Number of units",
+            "exampleData": [
+              "1",
+              "2",
+              "3"
+            ],
+            "dataType": "number"
+          },
+          {
+            "name": "subtotal",
+            "description": "unitPrice * quantity in cents",
+            "exampleData": [
+              "4999",
+              "2598",
+              "10497"
+            ],
+            "dataType": "number"
+          },
+          {
+            "name": "addedAt",
+            "description": "Timestamp when item was added",
+            "exampleData": [
+              "2026-02-24T08:05:00Z",
+              "2026-02-24T08:10:00Z",
+              "2026-02-24T08:12:00Z"
+            ],
+            "dataType": "string"
+          }
         ]
       },
-      {
-        "name": "Coupon",
+      "Coupon": {
         "type": "Entity",
         "boundedContext": "Cart",
+        "required": [
+          "id",
+          "code",
+          "discountType",
+          "discountValue",
+          "currentUses",
+          "expiresAt",
+          "isActive"
+        ],
         "fields": [
-          { "name": "id", "exampleData": ["cpn_001", "cpn_002", "cpn_003"], "isRequired": true, "dataType": "string" },
-          { "name": "code", "exampleData": ["SAVE10", "WELCOME20", "SUMMER15"], "isRequired": true, "dataType": "string" },
-          { "name": "discountType", "exampleData": ["percentage", "fixed_amount", "percentage"], "isRequired": true, "dataType": "string" },
-          { "name": "discountValue", "exampleData": ["10", "2000", "15"], "isRequired": true, "dataType": "number" },
-          { "name": "minOrderAmount", "exampleData": ["5000", "0", "10000"], "dataType": "number" },
-          { "name": "maxUses", "exampleData": ["100", "1000", "50"], "dataType": "number" },
-          { "name": "currentUses", "exampleData": ["45", "312", "49"], "isRequired": true, "dataType": "number" },
-          { "name": "expiresAt", "exampleData": ["2026-03-31T23:59:59Z", "2026-06-30T23:59:59Z", "2026-04-15T23:59:59Z"], "isRequired": true, "dataType": "string" },
-          { "name": "isActive", "exampleData": ["true", "true", "false"], "isRequired": true, "dataType": "boolean" }
+          {
+            "name": "id",
+            "description": "Unique coupon identifier",
+            "exampleData": [
+              "cpn_001",
+              "cpn_002",
+              "cpn_003"
+            ],
+            "dataType": "string"
+          },
+          {
+            "name": "code",
+            "description": "Coupon code entered by customer",
+            "exampleData": [
+              "SAVE10",
+              "WELCOME20",
+              "SUMMER15"
+            ],
+            "dataType": "string"
+          },
+          {
+            "name": "discountType",
+            "description": "Type of discount applied",
+            "exampleData": [
+              "percentage",
+              "fixed_amount",
+              "percentage"
+            ],
+            "dataType": "string"
+          },
+          {
+            "name": "discountValue",
+            "description": "Discount value (percentage or cents)",
+            "exampleData": [
+              "10",
+              "2000",
+              "15"
+            ],
+            "dataType": "number"
+          },
+          {
+            "name": "minOrderAmount",
+            "description": "Minimum order amount required in cents",
+            "exampleData": [
+              "5000",
+              "0",
+              "10000"
+            ],
+            "dataType": "number"
+          },
+          {
+            "name": "maxUses",
+            "description": "Maximum number of times coupon can be used",
+            "exampleData": [
+              "100",
+              "1000",
+              "50"
+            ],
+            "dataType": "number"
+          },
+          {
+            "name": "currentUses",
+            "description": "Number of times coupon has been used",
+            "exampleData": [
+              "45",
+              "312",
+              "49"
+            ],
+            "dataType": "number"
+          },
+          {
+            "name": "expiresAt",
+            "description": "Expiration timestamp",
+            "exampleData": [
+              "2026-03-31T23:59:59Z",
+              "2026-06-30T23:59:59Z",
+              "2026-04-15T23:59:59Z"
+            ],
+            "dataType": "string"
+          },
+          {
+            "name": "isActive",
+            "description": "Whether the coupon is currently active",
+            "exampleData": [
+              "true",
+              "true",
+              "false"
+            ],
+            "dataType": "boolean"
+          }
         ]
       }
-    ]
+    }
   },
   "groups": [
-    "Cart Management",
-    "Promotions",
-    "Checkout",
-    "Order Placement"
+    {
+      "name": "Cart Management",
+      "startSlotX": 0
+    },
+    {
+      "name": "Promotions",
+      "startSlotX": 3
+    },
+    {
+      "name": "Checkout",
+      "startSlotX": 5
+    },
+    {
+      "name": "Order Placement",
+      "startSlotX": 8
+    }
   ],
   "releases": []
 }
